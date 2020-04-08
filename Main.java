@@ -7,7 +7,9 @@ public class Main {
 
         file.parse();
 
-        file.printCharacters();
+        //file.printMaps();
+
+        file.printTop();
 
 
     }
