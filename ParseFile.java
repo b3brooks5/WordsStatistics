@@ -8,20 +8,29 @@ import java.util.*;
 public class ParseFile {
     private String Name;
     private int SIZE;
-    private HashMap<Integer, Integer> Integers = new HashMap<Integer, Integer>();
+    private HashMap<Integer, Integer> Integers = new HashMap<>();
     private ArrayList<Pair<Integer, Integer>> IntegerTop;
-    private HashMap<String, Integer> Words = new HashMap<String, Integer>();
+    private HashMap<String, Integer> Words = new HashMap<>();
     private ArrayList<Pair<String, Integer>> WordsTop;
-    private HashMap<Character, Integer> Characters = new HashMap<Character, Integer>();
+    private HashMap<Character, Integer> Characters = new HashMap<>();
     private ArrayList<Pair<Character, Integer>> CharactersTop;
 
+    // Constructors
+    ParseFile(){
+        Name = "";
+        SIZE = 10;
+
+        IntegerTop = new ArrayList<>(SIZE);        // default top size to 10
+        WordsTop = new ArrayList<>(SIZE);
+        CharactersTop = new ArrayList<>(SIZE);
+    }
     ParseFile(String name){
         Name = name;
         SIZE = 10;
 
-        IntegerTop = new ArrayList<Pair<Integer, Integer>>(SIZE);        // default top size to 10
-        WordsTop = new ArrayList<Pair<String, Integer>>(SIZE);
-        CharactersTop = new ArrayList<Pair<Character, Integer>>(SIZE);
+        IntegerTop = new ArrayList<>(SIZE);        // default top size to 10
+        WordsTop = new ArrayList<>(SIZE);
+        CharactersTop = new ArrayList<>(SIZE);
     }
 
     ParseFile(String name, int size){
@@ -29,9 +38,9 @@ public class ParseFile {
         if (size > 0)
             SIZE = size;
 
-        IntegerTop = new ArrayList<Pair<Integer, Integer>>(SIZE);
-        WordsTop = new ArrayList<Pair<String, Integer>>(SIZE);
-        CharactersTop = new ArrayList<Pair<Character, Integer>>(SIZE);
+        IntegerTop = new ArrayList<>(SIZE);
+        WordsTop = new ArrayList<>(SIZE);
+        CharactersTop = new ArrayList<>(SIZE);
     }
 
     // created the Maps of the given values
@@ -65,7 +74,7 @@ public class ParseFile {
     }   // end parse
 
     // returns true if string is an int and false otherwise
-    public boolean isInteger(String s) {
+    private boolean isInteger(String s) {
         try {
             Integer.parseInt(s);
             return true;
@@ -89,7 +98,7 @@ public class ParseFile {
         remove(top, token);     // only removes pairs in list that match token
 
         if((top.size() < SIZE || m.get(token) >= top.get(top.size() - 1).getValue())) {
-            Pair<K, Integer> p = new Pair<K, Integer>(token, m.get(token));
+            Pair<K, Integer> p = new Pair<>(token, m.get(token));
             top.add(p);
             top.sort(new CountCompare());       // sorts the list
 
@@ -109,21 +118,63 @@ public class ParseFile {
         }
     }
 
+    public ArrayList<String> compareWords(Map<String, Integer> rhs){
+        ArrayList<String> ret = new ArrayList<>();
+
+        for(String name : Words.keySet()) {
+            if(rhs.containsKey(name)) {
+                ret.add(name);
+            }
+        }
+
+        return ret;
+    }
+
+    public ArrayList<Character> compareCharacters(Map<Character, Integer> rhs){
+        ArrayList<Character> ret = new ArrayList<>();
+
+        for(Character name : Characters.keySet()) {
+            if(rhs.containsKey(name)){
+                ret.add(name);
+            }
+        }
+
+        return ret;
+    }
+
+    public ArrayList<Integer> compareIntegers(Map<Integer, Integer> rhs){
+        ArrayList<Integer> ret = new ArrayList<>();
+
+        for(Integer name : Integers.keySet()) {
+            if(rhs.containsKey(name)){
+                ret.add(name);
+            }
+        }
+
+        return ret;
+    }
+
+    // print functions
     // only prints the top ArrayLists
     public void printTop(){
-        System.out.printf("\tThe total unique characters is %d \n\t\tand the top characters are\n", Characters.size());
-        for (Pair<Character, Integer> characterIntegerPair : CharactersTop) {
-            System.out.printf("%c %d\n", characterIntegerPair.getKey(), characterIntegerPair.getValue());
+        if(!CharactersTop.isEmpty()) {
+            System.out.printf("The total unique characters is %d \n\t\tand the top characters are\n", Characters.size());
+            for (Pair<Character, Integer> characterIntegerPair : CharactersTop) {
+                System.out.printf("%-10c %d\n", characterIntegerPair.getKey(), characterIntegerPair.getValue());
+            }
+        }
+        if (!WordsTop.isEmpty()) {
+            System.out.printf("\nThe total unique words are %d\n\t\tand the top words are\n", Words.size());
+            for (Pair<String, Integer> StringIntegerPair : WordsTop) {
+                System.out.printf("%-10s %d\n", StringIntegerPair.getKey(), StringIntegerPair.getValue());
+            }
         }
 
-        System.out.printf("\n\tthe total unique words are %d\n\t\tand the top words are\n", Words.size());
-        for (Pair<String, Integer> StringIntegerPair : WordsTop) {
-            System.out.printf("%s %d\n", StringIntegerPair.getKey(), StringIntegerPair.getValue());
-        }
-
-        System.out.printf("\nThe total unique integers are %d\n\t\t and the top integers are\n", Integers.size());
-        for (Pair<Integer, Integer> IntegerIntegerPair : IntegerTop) {
-            System.out.printf("%d %d\n", IntegerIntegerPair.getKey(), IntegerIntegerPair.getValue());
+        if(!IntegerTop.isEmpty()) {
+            System.out.printf("\nThe total unique integers are %d\n\t\t and the top integers are\n", Integers.size());
+            for (Pair<Integer, Integer> IntegerIntegerPair : IntegerTop) {
+                System.out.printf("%-10d %d\n", IntegerIntegerPair.getKey(), IntegerIntegerPair.getValue());
+            }
         }
     }
 
@@ -134,8 +185,6 @@ public class ParseFile {
         for(Character name : Characters.keySet()) {
             System.out.printf("%s: %d\n", name, Characters.get(name));
         }
-
-
 
         System.out.printf("Number of Words in %s: %d\n", Name, Words.size());
         for(String name : Words.keySet()) {
@@ -156,4 +205,25 @@ public class ParseFile {
         }
     }
 
-}   // end of Parse File
+    // Get functions
+    public String getName(){
+        return Name;
+    }
+
+    public int getTopSize(){
+        return SIZE;
+    }
+
+    public Map<String, Integer> getWords(){
+        return Words;
+    }
+
+    public Map<Character, Integer> getCharacters() {
+        return Characters;
+    }
+
+    public Map<Integer, Integer> getIntegers() {
+        return Integers;
+    }
+
+    }   // end of Parse File
